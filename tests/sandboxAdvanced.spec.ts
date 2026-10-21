@@ -1,8 +1,8 @@
-import {test, expect, chromium, firefox, webkit} from '@playwright/test'
+import { test, expect, chromium, firefox, webkit } from '@playwright/test'
 
 
 
-test('conditional Handling - isChecked, isEditable', async({page})=> {
+test('conditional Handling - isChecked, isEditable', async ({ page }) => {
 
 
     await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-basic')
@@ -13,7 +13,7 @@ test('conditional Handling - isChecked, isEditable', async({page})=> {
 
     console.log("isCheckedState==>" + isCheckedState)
 
-    if(isCheckedState == false) {
+    if (isCheckedState == false) {
         console.log('inside if')
         await page.getByTestId('remember-checkbox').check()
 
@@ -26,7 +26,7 @@ test('conditional Handling - isChecked, isEditable', async({page})=> {
 })
 
 
-test('Conditional Handling - isVisible, isHidden, isDisabled', async({page})=> {
+test('Conditional Handling - isVisible, isHidden, isDisabled', async ({ page }) => {
 
     await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
 
@@ -46,7 +46,7 @@ test('Conditional Handling - isVisible, isHidden, isDisabled', async({page})=> {
 
 
 
-test('Dynamic Dropdown, Hidden Dropdown and Bootstrap Dropdown', async({page})=> {
+test('Dynamic Dropdown, Hidden Dropdown and Bootstrap Dropdown', async ({ page }) => {
 
     await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
 
@@ -79,7 +79,7 @@ test('Dynamic Dropdown, Hidden Dropdown and Bootstrap Dropdown', async({page})=>
 
 
 
-test('Handling Alert popup', async({page})=> {
+test('Handling Alert popup', async ({ page }) => {
 
     await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
 
@@ -105,7 +105,7 @@ test('Handling Alert popup', async({page})=> {
     // await expect(page.getByText('Confirm dismissed.')).toBeVisible()
 
 
-    page.on('dialog', async dialog=> {
+    page.on('dialog', async dialog => {
         console.log(dialog.message())
         dialog.accept('playwright')
     })
@@ -120,76 +120,205 @@ test('Handling Alert popup', async({page})=> {
 
 
 
-test.only('handling new tab', async({})=> {
+test.only('handling new tab', async ({ }) => {
 
-const browser = await chromium.launch()
+    const browser = await chromium.launch()
 
-const context = await browser.newContext()
+    const context = await browser.newContext()
 
-const page = await context.newPage()
-
-
-await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+    const page = await context.newPage()
 
 
- const [newPage] = await Promise.all([
-    context.waitForEvent('page'),
-    page.getByTestId('popup-link').click()
- ])
-
- await expect(newPage.getByText('Popup Opened Successfully')).toBeVisible()
-
- const title = await newPage.title()
-
- expect(title).toBe('Practice Popup')
-
-await expect(newPage).toHaveTitle('Practice Popup')
-
-await newPage.waitForTimeout(3000)
-
-//await expect(page.getByTestId('alert-btn')).toBeVisible()
-
-await page.bringToFront()
-
-await page.waitForTimeout(3000)
+    await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
 
 
-// pageone -> pageTwo -> pageThree
+    const [newPage] = await Promise.all([
+        context.waitForEvent('page'),
+        page.getByTestId('popup-link').click()
+    ])
+
+    await expect(newPage.getByText('Popup Opened Successfully')).toBeVisible()
+
+    const title = await newPage.title()
+
+    expect(title).toBe('Practice Popup')
+
+    await expect(newPage).toHaveTitle('Practice Popup')
+
+    await newPage.waitForTimeout(3000)
+
+    //await expect(page.getByTestId('alert-btn')).toBeVisible()
+
+    await page.bringToFront()
+
+    await page.waitForTimeout(3000)
+
+
+    // pageone -> pageTwo -> pageThree
+
+})
+
+
+
+test('Open popup tab (right click only)', async () => {
+
+    const browser = await chromium.launch()
+
+    const context = await browser.newContext()
+
+    const page = await context.newPage()
+
+
+    await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+
+    await page.getByTestId('popup-right-click-link').click()
+
+    await expect(page.getByText('Direct click blocked. Use right click -> Open link in new tab.')).toBeVisible()
+
+
+    const url = await page.getByTestId('popup-right-click-link').getAttribute('href')
+
+    console.log(url)
+
+    const pageTwo = await context.newPage()
+
+    await pageTwo.goto(`https://playwright-mastery-academy-app.vercel.app${url}`)
+
+    await expect(pageTwo.getByText('Popup Opened Successfully')).toBeVisible()
+
+
 
 })
 
 
 
-test('Open popup tab (right click only)', async()=> {
 
-const browser = await chromium.launch()
+test('Isolated context', async () => {
 
-const context = await browser.newContext()
+    test.setTimeout(180000)
 
-const page = await context.newPage()
+    const browser = await chromium.launch()
 
+    const context = await browser.newContext()
 
-await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
-
-
-await page.getByTestId('popup-right-click-link').click()
-
-await expect(page.getByText('Direct click blocked. Use right click -> Open link in new tab.')).toBeVisible()
+    const page = await context.newPage()
 
 
-const url = await page.getByTestId('popup-right-click-link').getAttribute('href')
+    await page.goto('https://testcms.reco-claims.ca/Login')
 
-console.log(url)
+    await page.locator('[name="Username"]').fill('info+programmanager@xlgclaims.com')
 
-const pageTwo = await context.newPage()
+    await page.locator('[name="Password"]').fill('XlgTest-2026!')
 
-await pageTwo.goto(`https://playwright-mastery-academy-app.vercel.app${url}`)
+    await page.locator('[type="submit"]').click()
 
-await expect(pageTwo.getByText('Popup Opened Successfully')).toBeVisible()
+    await page.waitForTimeout(15000)
+
+    //------------------------------------------------------------------------------------------
+
+
+    const contextTwo = await browser.newContext()
+
+    const pageTwo = await contextTwo.newPage()
+
+
+    await pageTwo.goto('https://testcms.reco-claims.ca/Login')
+
+    await pageTwo.locator('[name="Username"]').fill('info+programmanager@xlgclaims.com')
+
+    await pageTwo.locator('[name="Password"]').fill('XlgTest-2026!')
+
+    await pageTwo.locator('[type="submit"]').click()
+
+    await pageTwo.waitForTimeout(15000)
+
+
+    const cookie = await context.cookies()
+
+    const cookieTwo = await contextTwo.cookies()
+
+
+    console.log("cookie value==> " + JSON.stringify(cookie))
+    console.log("cookieTwo value==> " + JSON.stringify(cookieTwo))
+
+
+})
+
+
+
+test('drag and drop', async ({ page }) => {
+
+    await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+    await page.getByTestId('drag-source').dragTo(await page.getByTestId('drop-target'))
+
+    await expect(page.getByText('Drop completed successfully.')).toBeVisible()
+
+
+})
+
+
+test('File uploads', async ({ page }) => {
+
+    await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+    await page.getByTestId('file-upload-input').setInputFiles('uploads/practice-report.pdf')
+
+    await expect(page.getByText('practice-report.pdf uploaded successfully.')).toBeVisible()
+
+
+    await page.getByTestId('multi-file-upload-input').setInputFiles(['uploads/practice-report.pdf', 'uploads/practice-data.csv', 'uploads/practice-data.xml'])
+
+    await expect(page.getByText('3 files uploaded')).toBeVisible()
+
+
+})
+
+
+
+test('downloads', async ({ page }) => {
+
+
+    await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+    await page.getByTestId('download-pdf-btn').click()
+
+    const [download] = await Promise.all([
+        page.waitForEvent('download'),
+        page.getByTestId('download-csv-btn').click()
+
+    ])
+    const fileName = download.suggestedFilename()
+
+    download.saveAs(`downloads/${fileName}`)
+
+
+})
+
+
+
+
+
+test('iframe', async({page})=> {
+
+
+    await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+    const iframe = await page.frameLocator('[id="practice-iframe"]')
+
+    await iframe.locator('[id="frame-input"]').fill('playwright')
+
+    await iframe.locator('[id="frame-save"]').click()
+
+
+    await expect(iframe.locator('[id="frame-result"]')).toHaveText('Result: playwright saved')
 
 
 
 })
+
+
 
 
 
