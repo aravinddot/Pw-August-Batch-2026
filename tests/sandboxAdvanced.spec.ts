@@ -1,4 +1,4 @@
-import {test, expect} from '@playwright/test'
+import {test, expect, chromium, firefox, webkit} from '@playwright/test'
 
 
 
@@ -115,6 +115,84 @@ test('Handling Alert popup', async({page})=> {
 
     await expect(page.getByText('Prompt value: playwright')).toBeVisible()
 
+})
+
+
+
+
+test.only('handling new tab', async({})=> {
+
+const browser = await chromium.launch()
+
+const context = await browser.newContext()
+
+const page = await context.newPage()
+
+
+await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+
+ const [newPage] = await Promise.all([
+    context.waitForEvent('page'),
+    page.getByTestId('popup-link').click()
+ ])
+
+ await expect(newPage.getByText('Popup Opened Successfully')).toBeVisible()
+
+ const title = await newPage.title()
+
+ expect(title).toBe('Practice Popup')
+
+await expect(newPage).toHaveTitle('Practice Popup')
+
+await newPage.waitForTimeout(3000)
+
+//await expect(page.getByTestId('alert-btn')).toBeVisible()
+
+await page.bringToFront()
+
+await page.waitForTimeout(3000)
+
+
+// pageone -> pageTwo -> pageThree
+
+})
+
+
+
+test('Open popup tab (right click only)', async()=> {
+
+const browser = await chromium.launch()
+
+const context = await browser.newContext()
+
+const page = await context.newPage()
+
+
+await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+
+await page.getByTestId('popup-right-click-link').click()
+
+await expect(page.getByText('Direct click blocked. Use right click -> Open link in new tab.')).toBeVisible()
+
+
+const url = await page.getByTestId('popup-right-click-link').getAttribute('href')
+
+console.log(url)
+
+const pageTwo = await context.newPage()
+
+await pageTwo.goto(`https://playwright-mastery-academy-app.vercel.app${url}`)
+
+await expect(pageTwo.getByText('Popup Opened Successfully')).toBeVisible()
+
 
 
 })
+
+
+
+
+
+
