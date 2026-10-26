@@ -213,7 +213,9 @@ test('Isolated context', async () => {
 
     await page.locator('[type="submit"]').click()
 
-    await page.waitForTimeout(15000)
+    await page.locator('locator').waitFor({state: 'detached'})
+
+    // await page.waitForTimeout(15000)
 
     //------------------------------------------------------------------------------------------
 
@@ -231,7 +233,9 @@ test('Isolated context', async () => {
 
     await pageTwo.locator('[type="submit"]').click()
 
-    await pageTwo.waitForTimeout(15000)
+    await page.locator('locator').waitFor({state: 'detached'})
+
+    // await pageTwo.waitForTimeout(15000)
 
 
     const cookie = await context.cookies()
@@ -300,7 +304,7 @@ test('downloads', async ({ page }) => {
 
 
 
-test('iframe', async({page})=> {
+test('iframe', async ({ page }) => {
 
 
     await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
@@ -313,6 +317,120 @@ test('iframe', async({page})=> {
 
 
     await expect(iframe.locator('[id="frame-result"]')).toHaveText('Result: playwright saved')
+
+
+
+})
+
+
+
+test('shadow dom', async ({ page }) => {
+
+
+    await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+    const shadow = await page.getByTestId('shadow-host')
+
+    await shadow.locator('[id="shadow-input"]').fill('playwright')
+
+    await shadow.locator('#shadow-save').click()
+
+    await expect(shadow.locator('#shadow-result')).toHaveText('Result: playwright saved')
+
+
+})
+
+
+
+test('practice date', async ({ page }) => {
+
+    await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+    // await page.getByTestId('practice-date-picker').type('01-11-1993')
+
+    // await expect(page.getByText('Practice Date Selected: 1993-11-01')).toBeVisible()
+
+
+    await page.getByTestId('practice-date-picker').fill('1993-11-01')
+
+    await expect(page.getByText('Practice Date Selected: 1993-11-01')).toBeVisible()
+
+})
+
+
+
+test('interview date', async ({ page }) => {
+
+    await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+    const interviewDate = await page.getByTestId('interview-date-picker')
+
+    interviewDate.evaluate((dom, val)=> {
+
+        const html = dom as HTMLInputElement
+
+        html.value = val as string
+
+        html.dispatchEvent(new Event('input'))
+        html.dispatchEvent(new Event('change'))
+
+    }, '1993-11-01')
+
+
+    await expect(page.getByText('Interview Date Selected: 1993-11-01')).toBeVisible()
+
+})
+
+
+
+
+test('Advanced wait commands', async({page})=> {
+
+
+await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+// await page.getByTestId('wait-navigation-link').click()
+
+// await page.waitForURL('https://playwright-mastery-academy-app.vercel.app/practice/popup?source=waitfornavigation')
+
+// await expect(page.getByText('Popup Opened Successfully')).toBeVisible()
+
+
+// await page.getByTestId('wait-response-btn').click()
+
+// await page.waitForResponse('https://playwright-mastery-academy-app.vercel.app/api/practice/waits-status')
+
+// await expect(page.getByText('Trigger API Response Completed')).toBeVisible()
+
+
+
+
+// await page.getByTestId('wait-response-btn').click()
+
+// await page.getByText('Trigger API Response Completed').waitFor({ state: 'visible' })
+
+
+// // visible = element should be visible in UI, exists in DOM
+
+// // hidden = locator should not be visible in UI, but exists in DOM
+
+// // attached = DOM exists, may or may not be visible in UI
+
+// // detached = DOM does not exist, element is removed from the UI and DOM
+
+
+// await expect(page.getByText('Trigger API Response Completed')).toBeVisible()
+
+
+
+
+
+
+
+
+
+
+
 
 
 
