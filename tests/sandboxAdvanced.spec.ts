@@ -423,18 +423,218 @@ await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sand
 
 
 
+// load - DOM ready, images load - medium
+
+// await page.getByTestId('wait-loadstate-practice-load-btn').click()
+
+// await page.waitForLoadState('load')
+
+// await expect(page.getByText('Test load State: Completed')).toBeVisible()
 
 
+// domcontentloaded - DOM load - fast
+
+// await page.getByTestId('wait-loadstate-practice-dom-btn').click()
+
+// await page.waitForLoadState('domcontentloaded')
+
+// await expect(page.getByText('Test DOMContentLoaded State: Completed')).toBeVisible()
 
 
+// networkidle - DOM load, images load, Api calls completed - slow
 
+await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toBeVisible()
 
+await page.getByTestId('wait-loadstate-practice-networkidle-btn').click()
 
+await page.waitForLoadState('networkidle')
 
+await expect(page.getByText('Test Network Idle State: Completed')).toBeVisible()
 
 
 
 })
+
+
+
+test('Mouse actions', async({page}) => {
+
+await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+// await page.getByTestId('mouse-downup-target').hover()
+
+// await page.mouse.down()
+
+// await expect(page.getByText('Mouse down detected.')).toBeVisible()
+
+// await page.mouse.up()
+
+// await expect(page.getByText('Mouse down + up detected.')).toBeVisible()
+
+
+
+// await page.getByTestId('mouse-rightclick-target').click({ button: 'right' })
+
+// await expect(page.getByText('Right click detected on target.')).toBeVisible()
+
+
+// await page.getByTestId('mouse-wheel-target').hover()
+
+// await page.mouse.wheel(0, 300)
+
+// await expect(page.getByText('Mouse wheel scrolled down.')).toBeVisible()
+
+
+await page.getByTestId('mouse-wheel-target').scrollIntoViewIfNeeded()
+
+
+
+await page.locator('dorpdownlist').getByText('someValue').scrollIntoViewIfNeeded()
+
+await page.getByText('someValue').click()
+
+
+})
+
+
+
+
+test('force actions', async({page}) => {
+
+// avoid to use force actions
+
+// attached DOM
+// Visible
+// enabled
+// Stable
+// not covered by another element
+
+// clicking wrong element unintentionally
+
+
+await page.getByTestId('mouse-wheel-target').click({ force: true })
+
+// click, dblclick, hover, check, uncheck, dragto, fill
+
+})
+
+
+
+test('screenshots', async({page})=> {
+
+await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+
+await page.getByTestId('wait-response-btn').screenshot({path: 'screenshots/element.png'})
+
+await page.screenshot({path: 'screenshots/page.png', fullPage: true})
+
+
+})
+
+
+
+
+test('Advanced assertions - retry, non retry, negating', async({page}) => {
+
+// retry assertions - 5 secs by default
+
+// visiblity & state
+
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toBeVisible()
+//await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toBeHidden()
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toBeEnabled()
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toBeDisabled()
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toBeEditable()
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toBeChecked()
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toBeFocused()
+
+
+// text
+
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toHaveText('Expected Text')
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toContainText('Expected')
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toHaveValue('Expected Text')
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toHaveAttribute('type', 'button')
+// await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).toHaveClass('active')
+
+
+// page
+
+// await expect(page).toHaveURL('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
+// await expect(page).toHaveTitle('Playwright Mastery Academy - Sandbox Advanced')
+
+
+
+// non retry assertions
+
+const num = 5
+
+expect(num).toBe(5)
+expect(num).toEqual('5')
+expect(num).toStrictEqual(5)
+expect(num).toBeGreaterThan(4)
+expect(num).toBeGreaterThanOrEqual(5)
+expect(num).toBeLessThan(6)
+expect(num).toBeLessThanOrEqual(5)
+
+
+const value = true
+
+expect(value).toBe(true)
+expect(value).toBeTruthy()
+expect(value).toBeFalsy()
+
+expect(null).toBeNull()
+expect(undefined).toBeUndefined()
+expect('a').toBeDefined()
+
+expect([10,20, 30]).toContain(20)
+
+
+
+// negating assertions
+
+await expect(page.getByTestId('wait-loadstate-practice-networkidle-btn')).not.toBeVisible()
+
+expect(num).not.toBe(5)
+
+
+})
+
+
+
+
+test('Hard vs soft assertions', async({page})=> {
+
+        await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-basic')
+
+        await page.getByTestId('single-click-btn').click()
+
+        await expect.soft(page.getByText('Single click completed playwright')).toBeVisible()
+
+        await page.getByTestId('double-click-btn').dblclick()
+
+        await expect(page.getByText('Double click completed')).toBeVisible()
+
+        await page.getByTestId('hover-btn').hover()
+
+        await expect(page.getByText('Hover triggered successfully.')).toBeVisible()
+
+        await page.getByTestId('tooltip-trigger-btn').hover()
+
+        await expect(page.getByTestId('hover-tooltip')).toContainText('Tooltip verified')
+
+        // await expect(page.getByTestId('hover-tooltip')).toContainText('Tooltip is verified')
+
+        // await expect(page.getByText('Tooltip is verified', {exact: true})).toBeVisible()
+
+
+
+    })
+
+
+
+
 
 
 
