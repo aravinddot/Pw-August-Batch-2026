@@ -2,7 +2,7 @@ import { test, expect, chromium, firefox, webkit } from '@playwright/test'
 
 
 
-test('conditional Handling - isChecked, isEditable', async ({ page }) => {
+test('conditional Handling - isChecked, isEditable @smoke', async ({ page }) => {
 
 
     await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-basic')
@@ -26,7 +26,7 @@ test('conditional Handling - isChecked, isEditable', async ({ page }) => {
 })
 
 
-test('Conditional Handling - isVisible, isHidden, isDisabled', async ({ page }) => {
+test('Conditional Handling - isVisible, isHidden, isDisabled @regression', async ({ page }) => {
 
     await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
 
@@ -46,7 +46,7 @@ test('Conditional Handling - isVisible, isHidden, isDisabled', async ({ page }) 
 
 
 
-test('Dynamic Dropdown, Hidden Dropdown and Bootstrap Dropdown', async ({ page }) => {
+test('Dynamic Dropdown, Hidden Dropdown and Bootstrap Dropdown @smoke @regression', async ({ page }) => {
 
     await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-advanced')
 
@@ -120,7 +120,7 @@ test('Handling Alert popup', async ({ page }) => {
 
 
 
-test.only('handling new tab', async ({ }) => {
+test('handling new tab', async ({ }) => {
 
     const browser = await chromium.launch()
 

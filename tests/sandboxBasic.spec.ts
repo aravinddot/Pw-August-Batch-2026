@@ -4,14 +4,14 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Basic Element Handling', async()=> { // Test suite
 
-
+// only, skip, fixme, fail, slow
     test('Click, Double Click, Hover, Tooltip', async({page})=> {
-
+        test.slow()
         await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-basic')
 
         await page.getByTestId('single-click-btn').click()
 
-        await expect(page.getByText('Single click completed')).toBeVisible()
+        await expect(page.getByText('Single click completed playwright')).toBeVisible()
 
         await page.getByTestId('double-click-btn').dblclick()
 
