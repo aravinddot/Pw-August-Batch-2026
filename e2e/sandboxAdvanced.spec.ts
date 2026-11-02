@@ -5,7 +5,7 @@ import { test, expect, chromium, firefox, webkit } from '@playwright/test'
 test('conditional Handling - isChecked, isEditable @smoke', async ({ page }) => {
 
 
-    await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-basic')
+    await page.goto('/practice/sandbox-basic')
 
     await page.getByTestId('remember-checkbox').check()
 

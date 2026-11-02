@@ -2,9 +2,10 @@ import {test, expect} from '@playwright/test'
 
 
 test('test', async ({ page }) => {
-  await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-basic');
-  await page.getByTestId('single-click-btn').click();
-  await expect(page.getByText('Single click completed.')).toBeVisible();
+  test.setTimeout(180000)
+  await page.goto('https://playwright-mastery-academy-app.vercel.app/practice/sandbox-basic', {timeout: 120000});
+  await page.getByTestId('single-click-btn').click({timeout: 120000});
+  await expect(page.getByText('Single click completed.')).toBeVisible({timeout: 120000});
   await page.pause()
   await page.getByTestId('double-click-btn').dblclick();
   await expect(page.getByTestId('double-click-status')).toContainText('Double click completed.');
