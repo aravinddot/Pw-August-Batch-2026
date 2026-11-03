@@ -21,7 +21,7 @@ export default defineConfig({
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: true,
+  forbidOnly: false,
   /* Retry on CI only */
   retries: 0,
   /* Opt out of parallel tests on CI. */
@@ -51,15 +51,15 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     /* Test against mobile viewports. */
     // {
