@@ -24,6 +24,8 @@ test.describe('API Tests', () => {
 
         const body = await response.json()
 
+        delete body[0].name
+
         expect(body[0].name).toBe('Blue Top')
 
         expect(body[0].name).toBeDefined()
@@ -66,6 +68,57 @@ test.describe('API Tests', () => {
 
         expect(body.name).toBe('POST method')
 
+
+    })
+
+
+
+    test('PUT method', async ({ request }) => {
+
+       const response = await request.put('http://localhost:3000/products/3', {
+            data: {
+                name: "PUT method",
+                price: "Rs. 1500",
+                brand: "PUT Polo",
+                category: {
+                    usertype: {
+                        usertype: "PUT METHOD"
+                    },
+                    category: "PUT METHOD"
+                },
+            }
+        })
+
+
+        expect(response.status()).toBe(200)
+        expect(response.statusText()).toBe('OK')
+    })
+
+
+
+    test('PATCH Method', async({request})=> {
+
+        const response = await request.patch('http://localhost:3000/products/3', {
+            data: {
+                name: "PATCH Method"
+            }
+        })
+
+         expect(response.status()).toBe(200)
+        expect(response.statusText()).toBe('OK')
+
+    })
+
+
+
+    test('DELETE Method', async({request})=> {
+
+        const id = 3
+
+        const response = await request.delete(`http://localhost:3000/products/${id}`)
+
+         expect(response.status()).toBe(200)
+        expect(response.statusText()).toBe('OK')
 
     })
 
